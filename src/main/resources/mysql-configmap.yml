@@ -3,5 +3,5 @@ kind: ConfigMap
 metadata:
   name: db-conf
 data:
- host: db-sanjeevani-patna-do-user-3054692-0.a.db.ondigitalocean.com
- name: defaultdb
+ host: mysql
+ name: test  
