@@ -1,76 +1,60 @@
-moaga5610ax82wlw
+1 Create connfig map using
+kubectl apply -f mysql-configmap.yml
 
-DESKTOP-5OFLINR
-username = doadmin
+kubectl get configmap
+2. Create credentials
+kubectl apply -f mysqldb-credentials.yml
+kubectl get secrets
 
-moaga5610ax82wlw
-db-sanjeevani-patna-do-user-3054692-0.a.db.ondigitalocean.com
-25060
-
-db: defaultdb
-
-
-### Deploying SpringBoot Applications
-
-**spring-bank-branch-service-docker**: This module demonstrates running SpringBoot application in Docker container.
-
-#### How to run?
-
-spring-bank-branch-service-docker> mvn spring-boot:run
-
-## Running on Docker container
-
-Build the docker image using maven
-
-spring-bank-branch-service-docker> mvn clean package docker:build
-
-### Running MySQL and Application containers individually
+3. kubectl apply -f mysqldb-root-credentials.yml
+kubectl get secrets
 
 
-*Run mysql :*
 
-docker run -d --name branch-service -e MYSQL_ROOT_PASSWORD=secret123 -e MYSQL_DATABASE=branch-service -e MYSQL_USER=dbuser -e MYSQL_PASSWORD=secret mysql:latest
+4. deploy mysql
+kubectl apply -f mysql-deployment.yml
+kubectl get deployments
 
-*Run application linking to demo-mysql container:*
+5. create container from images using docker command
 
-docker run -d --name spring-bank-branch-service-kubernetes -e "SPRING_PROFILES_ACTIVE=docker" --link branch-service:mysql -p 8080:8080 rkp/spring-bank-branch-service-kubernetes
-
-docker logs -f <first 3 letter of container id>
-
-http://localhost:8080/branch
-
-
-### Running MySQL and Application using docker-compose
+rkp/helloworld
+docker build -t helloworld:1.0 .
+docker image tag helloworld:1.0 rkp/helloworld
 
 
-Navigate to the directory where docker-compose.yml file is there.
-
-spring-bank-branch-service-docker> docker-compose up
-http://localhost:8080/branch
-http://localhost:8080/
-http://127.0.0.1:8080/branch
-
-#if ther is issue in starting minikube delete
-minikube delete 
-#then start otherwise start directly
-minikube start
-or 
-minikube start --vm-driver=virtualbox
-minikube start --driver=docker
-minikube start --alsologtostderr
-minikube config set vm-driver virtualbox
-kubectl config use-context minikube
-kubectl cluster-info
-minikube dashboard
-
-We have to make sure here that we trigger the build process on the Docker host of the Minikube cluster, otherwise, Minikube won't find the images later during deployment. Furthermore, the workspace on our host must be mounted into the Minikube VM:
+6. Deploy spring boot application
+kubectl apply -f helloworld-deployment.yml
+kubectl get deployments
+kubectl get pods
+kubectl logs  <pod id>
 
 
-$> minikube ssh
+ get ip of minikube
+minikube ip
 
-/g/JAVA/microservices/spring-microservices/spring-boot-only-mini-kube/spring-bank-branch-service-kubernetes
-$> cd /g/JAVA/microservices/spring-microservices/spring-boot-only-mini-kube/spring-bank-branch-service-kubernetes
-$> docker build --file=Dockerfile --tag=rkp/spring-bank-branch-service-kubernetes:latest --rm=true .
-  
-kubectl run kube-demo1 --image=rkp/spring-bank-branch-service-kubernetes:latest --port=8080 --image-pull-policy Never
-kubectl run kube-demo --image=rkp/spring-bank-branch-service-kubernetes --port=8080
+http://192.168.99.105:30163/user/all
+
+
+
+minikube docker-env
+
+SET DOCKER_TLS_VERIFY=1
+
+SET DOCKER_HOST=tcp://192.168.99.101:2376
+
+SET DOCKER_CERT_PATH=C:\Users\Acer\.minikube\certs
+
+SET MINIKUBE_ACTIVE_DOCKERD=minikube
+REM @FOR /f "tokens=*" %i IN ('minikube -p minikube docker-env') DO @%i
+
+
+
+docker login --username=rakeshpriyad
+
+docker images
+
+
+docker tag f4c71de80e10 rakeshpriyad/helloworld:1.0
+
+docker push rakeshpriyad/helloworld
+
