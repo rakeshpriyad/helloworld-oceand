@@ -31,7 +31,7 @@ spec:
     spec:
       containers:
         - name: helloworld
-          image: helloworld:1.0
+          image: rakeshpriyad/helloworld:1.0
           ports:
             - containerPort: 8080                
           env:   # Setting Enviornmental Variables
