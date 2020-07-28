@@ -1,0 +1,58 @@
+kind: Service
+apiVersion: v1
+metadata:
+  name: helloworld
+  labels:
+    name: helloworld
+spec:
+  ports:
+    - nodePort: 30163 
+      port: 8080      
+      targetPort: 8080  
+      protocol: TCP
+  selector:           
+    app: helloworld
+  type: NodePort       
+
+---
+apiVersion: apps/v1 
+kind: Deployment    
+metadata:              
+  name: helloworld
+spec:                
+  selector:         
+    matchLabels:
+      app: helloworld
+  replicas: 1
+  template:
+    metadata:
+      labels:        
+        app: helloworld
+    spec:
+      containers:
+        - name: helloworld
+          image: rakeshpriyad/helloworld:1.0
+          ports:
+            - containerPort: 8080                
+          env:   # Setting Enviornmental Variables
+          - name: DB_HOST   # Setting Database host address from configMap
+            valueFrom: 
+              configMapKeyRef:
+                name: db-conf  # name of configMap
+                key: host
+          - name: DB_NAME  # Setting Database name from configMap
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: MYSQL_DATABASE
+          - name: DB_USERNAME  # Setting Database username from Secret
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret # Secret Name
+                key: MYSQL_USER
+          - name: DB_PASSWORD # Setting Database password from Secret
+            valueFrom:
+              secretKeyRef:
+                name: mysql-secret
+                key: MYSQL_PASSWORD
+        
